@@ -1,0 +1,39 @@
+.wraper{
+   
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    
+}
+
+.auth-input{
+    border: none;
+    line-height: 32px;
+    border-bottom: 1px solid gray;
+}
+.auth-input:focus{
+    outline: none;
+   
+}
+.auth-form{
+    width: 90%;
+    background-color: #cecbcb41;
+}
+.auth-form button{
+    color: white;
+    background-color: black;
+    border: none;
+    padding: 10px 50px ;
+}
+
+
+@media (min-width:550px) {
+    .auth-form{
+        width:50%;
+    }   
+}
+@media (min-width:998px) {
+    .auth-form{
+        width:40%;
+    }   
+}

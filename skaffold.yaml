@@ -1,0 +1,35 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+manifests:
+  rawYaml:
+    - ./infra/k8s/*
+deploy:
+  kubectl: {}
+build:
+  local:
+    push: false
+  artifacts:
+    - image: akbar010202/auth
+      context: auth
+      sync:
+        manual:
+          - src: build/**/*.js
+            dest: .
+      docker:
+        dockerfile: Dockerfile
+    - image: akbar010202/products
+      context: products
+      sync:
+        manual:
+          - src: build/**/*.js
+            dest: .
+      docker:
+        dockerfile: Dockerfile
+    - image: akbar010202/client
+      context: client
+      sync:
+        manual:
+          - src: "**/*.js"
+            dest: .
+      docker:
+        dockerfile: Dockerfile
