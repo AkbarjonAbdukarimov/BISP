@@ -32,7 +32,7 @@ router.post(
       .withMessage("Please Provide Services Business Offers"),
   ],
   upload.array("images"),
-  requireAuth,
+
   catchAsync(async (req, res, next) => {
     const { body, files } = req;
     let uploadedFiles: String[] = [];
@@ -110,7 +110,7 @@ router.put(
   upload.array("images"),
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const { name, qty, price, categories, deletedImages } = req.body;
+    const { name, description, services, categories, deletedImages } = body;
     const { files } = req;
 
     const product = await Product.findById(id);
@@ -149,8 +149,9 @@ router.put(
     }
 
     product.name = name;
-    product.price = price;
-    product.qty = qty;
+    product.description = description;
+    product.services = services;
+
     if (categories && categories.length > 0) {
       product.categories = categories;
     }
