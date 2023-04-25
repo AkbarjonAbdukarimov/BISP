@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && nodemon build/index.js",
+    "buildDev": "tsc && nodemon build/index.js",
     "dev": "ts-node-dev --poll src/index.ts",
-    "buildDev": "concurrently  \"tsc -w\" \"nodemon build/index.js\""
+    "start": "concurrently  \"tsc\" \"nodemon build/index.js\""
   },
   "keywords": [],
   "author": "",

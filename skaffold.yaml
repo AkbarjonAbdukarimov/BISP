@@ -13,7 +13,7 @@ build:
       context: auth
       sync:
         manual:
-          - src: build/**/*.js
+          - src: "src/**/*.ts"
             dest: .
       docker:
         dockerfile: Dockerfile
@@ -21,7 +21,7 @@ build:
       context: posts
       sync:
         manual:
-          - src: build/**/*.js
+          - src: "src/**/*.ts"
             dest: .
       docker:
         dockerfile: Dockerfile
