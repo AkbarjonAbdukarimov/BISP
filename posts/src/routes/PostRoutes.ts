@@ -9,7 +9,7 @@ import { file } from "googleapis/build/src/apis/file";
 
 import multer, { MulterError } from "multer";
 import { deleteFiles, uploadFile } from "../utils/cloud";
-import Product from "../models/Product";
+import Product from "../models/Post";
 import { body } from "express-validator";
 
 const upload = multer();
@@ -19,41 +19,47 @@ router.post(
   "/create",
   //  requireAuth,
   [
-    body("name").trim().notEmpty().withMessage("Please give Product name"),
-    body("price")
+    body("name").trim().notEmpty().withMessage("Please give Business Name"),
+    body("description")
       .trim()
-      .isFloat({ gt: 0 })
-      .withMessage("Price must be greater than 0"),
-    body("qty")
-      .trim()
-      .isFloat({ gt: 0 })
-      .withMessage("Quantity must be greater than 0"),
+      .notEmpty()
+      .withMessage("Please give Business Description"),
+    body("categories")
+      .notEmpty()
+      .withMessage("Please Select Business Category"),
+    body("services")
+      .notEmpty()
+      .withMessage("Please Provide Services Business Offers"),
   ],
   upload.array("images"),
+  requireAuth,
   catchAsync(async (req, res, next) => {
     const { body, files } = req;
     let uploadedFiles: String[] = [];
     if (!files || files.length === 0) {
       throw new BadRequestError("Please upload Images");
     }
+    //@ts-ignore
     if (files.length > 5) {
       throw new BadRequestError("Can't upload more than 5 files");
     }
     //@ts-ignore
-    const imgs: Number = files.length - 1;
+    const imgs: number = files.length - 1;
     for (let i = 0; i <= imgs; i++) {
       //@ts-ignore
       const file = await uploadFile(files[i]);
       //@ts-ignore
       uploadedFiles.push(file.id);
     }
-    const { name, price, qty, categories } = body;
+    const { name, description, services, categories } = body;
     const product = Product.build({
-      name,
-      price,
-      qty,
+      name: name,
+      description: description,
       images: uploadedFiles,
-      categories,
+      services: services,
+      //@ts-ignore
+      author: req.currentUser.id,
+      categories: categories,
     });
     await product.save();
     res.status(201).send({
@@ -64,11 +70,9 @@ router.post(
 router.get(
   "/",
   catchAsync(async (req, res) => {
-    const { name, minPrice, maxPrice, id } = req.query;
+    const { name, categories, id } = req.query;
 
-    let query = {
-      price: { $lte: maxPrice || 1000000000, $gte: minPrice || 0 },
-    };
+    let query = {};
     if (name) {
       //@ts-ignore
       query = { ...query, name: { $regex: new RegExp(name, "i") } };
@@ -76,6 +80,10 @@ router.get(
     if (id) {
       //@ts-ignore
       query = { _id: id };
+    }
+    //@ts-ignore
+    if (categories && categories.length > 0) {
+      query = { ...query, categories: { $in: categories } };
     }
     const products = await Product.find(query);
     if (products.length === 0) {
@@ -87,15 +95,17 @@ router.get(
 router.put(
   "/update/:id",
   [
-    body("name").trim().notEmpty().withMessage("Please give Product name"),
-    body("price")
+    body("name").trim().notEmpty().withMessage("Please give Business Name"),
+    body("description")
       .trim()
-      .isFloat({ gt: 0 })
-      .withMessage("Price must be greater than 0"),
-    body("qty")
-      .trim()
-      .isFloat({ gt: 0 })
-      .withMessage("Quantity must be greater than 0"),
+      .notEmpty()
+      .withMessage("Please give Business Description"),
+    body("categories")
+      .notEmpty()
+      .withMessage("Please Select Business Category"),
+    body("services")
+      .notEmpty()
+      .withMessage("Please Provide Services Business Offers"),
   ],
   upload.array("images"),
   catchAsync(async (req, res) => {
@@ -124,6 +134,7 @@ router.put(
         if (!files || files.length === 0) {
           throw new BadRequestError("Please upload Images");
         }
+        //@ts-ignore
         if (files.length > 5) {
           throw new BadRequestError("Can't upload more than 5 files");
         }

@@ -1,6 +1,6 @@
 import { errorHandler, NotFoundError } from "@akbar0102/common";
 import express, { json } from "express";
-import { ProductsRoute } from "./routes/ProductsRoute";
+import { ProductsRoute } from "./routes/PostRoutes";
 const app = express();
 
 app.use(json());
