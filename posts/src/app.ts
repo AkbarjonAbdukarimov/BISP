@@ -5,7 +5,7 @@ const app = express();
 
 app.use(json());
 app.set("trust proxy", true);
-app.use("/api/products", ProductsRoute);
+app.use("/api/posts", ProductsRoute);
 app.all("*", (req, res) => {
   throw new NotFoundError();
 });

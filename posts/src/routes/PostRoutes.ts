@@ -5,7 +5,6 @@ import {
   requireAuth,
 } from "@akbar0102/common";
 import { Router } from "express";
-import { file } from "googleapis/build/src/apis/file";
 
 import multer, { MulterError } from "multer";
 import { deleteFiles, uploadFile } from "../utils/cloud";
