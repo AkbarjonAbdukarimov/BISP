@@ -17,8 +17,8 @@ build:
             dest: .
       docker:
         dockerfile: Dockerfile
-    - image: akbar010202/products
-      context: products
+    - image: akbar010202/posts
+      context: posts
       sync:
         manual:
           - src: build/**/*.js

@@ -1,25 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: products-depl
+  name: posts-mongo-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: products
+      app: posts-mongo
   template:
     metadata:
       labels:
-        app: products
+        app: posts-mongo
     spec:
       containers:
-        - name: products
-          image: akbar010202/products
-          env:
-            - name: MONGO_URI
-              value: "mongodb://products-mongo-srv:27017/products"
-            - name: JWT_KEY
-              value: "JWT_Secret"
+        - name: posts-mongo
+          image: mongo
           resources:
             limits:
               memory: 512Mi
@@ -31,12 +26,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: products-srv
+  name: posts-mongo-srv
 spec:
   selector:
-    app: products
+    app: posts-mongo
   ports:
-    - name: products
+    - name: db
       protocol: TCP
-      port: 3000
-      targetPort: 3000
+      port: 27017
+      targetPort: 27017
