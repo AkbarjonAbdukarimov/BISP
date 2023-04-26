@@ -4,6 +4,7 @@ dotenv.config();
 import { app } from "./app";
 import natsClient from "./natsClinet";
 import { PostCreatedListener } from "./listeners/postCreatedListener";
+import { PostUpdatedListener } from "./listeners/postUpdatedListener";
 
 const start = async () => {
   mongoose.set("strictQuery", false);
@@ -24,6 +25,7 @@ const start = async () => {
     process.on("SIGTERM", () => natsClient.client.close());
 
     new PostCreatedListener(natsClient.client).listen();
+    new PostUpdatedListener(natsClient.client).listen();
 
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDb");

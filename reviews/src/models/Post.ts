@@ -31,7 +31,7 @@ const PostSchema = new mongoose.Schema(
     },
     description: String,
     images: { type: [] },
-    services: { type: [], required: true },
+    services: { type: [] },
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     categories: [{ type: String }],
     reviews: [{ type: mongoose.Types.ObjectId, ref: "Review" }],
@@ -45,7 +45,12 @@ const PostSchema = new mongoose.Schema(
     },
   }
 );
-
+PostSchema.statics.findByEvent = (event: { id: string; version: number }) => {
+  return Post.findOne({
+    _id: event.id,
+    version: event.version - 1,
+  });
+};
 PostSchema.statics.build = (attrs: PostAttrs) => new Post(attrs);
 
 const Post = mongoose.model<PostDoc, PostModel>("Post", PostSchema);

@@ -7,25 +7,12 @@ import {
 } from "@akbar0102/common";
 import { Router } from "express";
 
-import multer, { MulterError } from "multer";
 import { deletefiles, uploadFile } from "../utils/cloud";
 import Product from "../models/Review";
 import { body } from "express-validator";
 import mongoose from "mongoose";
 
-import ImageKit from "imagekit";
-import { PostCreatedPublisher } from "../publisher/postCreated";
 import natsClient from "../natsClinet";
-import { PostUpdatedPublisher } from "../publisher/postUpdated";
-
-const imagekit = new ImageKit({
-  //@ts-ignore
-  urlEndpoint: process.env.IMAGE_KIT_URL,
-  //@ts-ignore
-  publicKey: process.env.IMAGE_KIT_PUBLIC_KEY,
-  //@ts-ignore
-  privateKey: process.env.IMAGE_KIT_PRIVATE_KEY,
-});
 
 const upload = multer({ storage: multer.memoryStorage() });
 const router = Router();
