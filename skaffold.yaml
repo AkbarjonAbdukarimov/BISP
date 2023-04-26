@@ -25,6 +25,14 @@ build:
             dest: .
       docker:
         dockerfile: Dockerfile
+    - image: akbar010202/review
+      context: reviews
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+      docker:
+        dockerfile: Dockerfile
     - image: akbar010202/client
       context: client
       sync:

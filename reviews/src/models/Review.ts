@@ -1,5 +1,5 @@
 import mongoose, { mongo } from "mongoose";
-
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 interface ReviewAttrs {
   rating: Number;
   comment: String;
@@ -13,6 +13,7 @@ interface ReviewDoc extends mongoose.Document {
   author: String;
   date: Date;
   postId: String;
+  version: number;
 }
 interface ReviewModel extends mongoose.Model<ReviewDoc> {
   build(Review: ReviewAttrs): ReviewDoc;

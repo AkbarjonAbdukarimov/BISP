@@ -5,7 +5,7 @@ import {
   NotFoundError,
 } from "@akbar0102/common";
 import express, { json } from "express";
-import { ProductsRoute } from "./routes/ReviewRoutes";
+import { ReviewRoutes } from "./routes/ReviewRoutes";
 import jwt from "jsonwebtoken";
 import cookieSession from "cookie-session";
 const app = express();
@@ -22,7 +22,7 @@ app.use(json());
 app.set("trust proxy", true);
 app.use(currentUser);
 
-app.use("/api/posts", ProductsRoute);
+app.use("/api/reviews", ReviewRoutes);
 app.all("*", (req, res) => {
   console.log("not found");
   throw new NotFoundError();

@@ -26,6 +26,13 @@ spec:
                 port:
                   number: 3000
           - pathType: Prefix
+            path: /api/reviews/?(.*)
+            backend:
+              service:
+                name: posts-srv
+                port:
+                  number: 3000
+          - pathType: Prefix
             path: /?(.*)
             backend:
               service:

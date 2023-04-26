@@ -157,6 +157,11 @@ router.put(
     if (!product) {
       throw new NotFoundError("Product Not Found");
     }
+    //@ts-ignore
+    if (product.author !== req.currentUser?.id)
+      res.status(403).send({
+        errors: [{ message: "You are not own this" }],
+      });
     let delImgs: { name: string; fileId: string }[] = [...product.images];
 
     //@ts-ignore
@@ -217,9 +222,13 @@ router.delete(
   requireAuth,
   catchAsync(async (req, res) => {
     const pr = await Product.findById(req.params.id);
-    if (pr?.author !== req.currentUser?.id)
-      res.status(403).send("Access Dynied");
     if (!pr) throw new NotFoundError("Product Not Found");
+    //@ts-ignore
+    if (pr?.author !== req.currentUser?.id)
+      res.status(403).send({
+        errors: [{ message: "You are not own this" }],
+      });
+
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);
 
     //@ts-ignore

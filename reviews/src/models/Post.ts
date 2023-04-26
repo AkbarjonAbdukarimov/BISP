@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 interface PostAttrs {
   name: String;
   description: String;
