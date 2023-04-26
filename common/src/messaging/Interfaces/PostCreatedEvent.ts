@@ -1,6 +1,6 @@
 import Subject from "../subjects/Subjects";
 
-interface PostCreatedEvent {
+export interface PostCreatedEvent {
   subject: Subject.PostCreated;
   data: {
     id: String;
@@ -9,4 +9,3 @@ interface PostCreatedEvent {
     _v: Number;
   };
 }
-export default PostCreatedEvent;

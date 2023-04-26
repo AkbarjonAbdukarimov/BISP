@@ -1,6 +1,6 @@
 import Subject from "../subjects/Subjects";
 
-interface ReviewCreatedEvent {
+export interface ReviewCreatedEvent {
   subject: Subject.ReviewCreated;
   data: {
     id: String;
@@ -11,4 +11,3 @@ interface ReviewCreatedEvent {
     _v: Number;
   };
 }
-export default ReviewCreatedEvent;

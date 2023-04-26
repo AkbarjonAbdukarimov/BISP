@@ -13,6 +13,9 @@ export * from "./middleware/validateRequest";
 export * from "./utils/catAsync";
 
 export * from "./messaging/Interfaces/PostCreatedEvent";
+export * from "./messaging/Interfaces/PostUpdatedEvent";
+export * from "./messaging/Interfaces/PostDeletedEvent";
+
 export * from "./messaging/Interfaces/ReviewCreatedEvent";
 export * from "./messaging/base-class/BaseListener";
 export * from "./messaging/base-class/BasePublisher";
