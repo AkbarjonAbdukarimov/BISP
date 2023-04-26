@@ -1,3 +1,4 @@
+import buildClient from "@/api/buildClient";
 import Link from "next/link";
 
 export default function Home({ currentUser }) {
@@ -5,8 +6,12 @@ export default function Home({ currentUser }) {
     <>
       <div className="container">
 
-        <h1>Welcome Back {currentUser && currentUser.email}</h1>
+
       </div>
     </>
   )
+}
+Home.getInitialProps = async (client, ctx,) => {
+  const posts = await client.get('/api/posts');
+  return { posts }
 }
