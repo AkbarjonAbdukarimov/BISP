@@ -13,7 +13,9 @@ import { body } from "express-validator";
 import mongoose from "mongoose";
 
 import ImageKit from "imagekit";
-import { Multer } from "multer";
+import { PostCreatedPublisher } from "../publisher/postCreated";
+import natsClient from "../natsClinet";
+import { PostUpdatedPublisher } from "../publisher/postUpdated";
 
 const imagekit = new ImageKit({
   //@ts-ignore
@@ -54,7 +56,7 @@ router.get(
 );
 router.post(
   "/create",
-  //  requireAuth,
+  requireAuth,
   [
     body("name").trim().notEmpty().withMessage("Please give Business Name"),
     body("description")
@@ -114,12 +116,20 @@ router.post(
       categories: categories,
     });
     await product.save();
+    new PostCreatedPublisher(natsClient.client).publish({
+      //@ts-ignore
+      id: post.id, //@ts-ignore
+      name: post.name, //@ts-ignore
+      author: post.author, //@ts-ignore
+      version: post.version, //@ts-ignore
+    });
     res.status(201).send(product);
   })
 );
 
 router.put(
   "/update/:id",
+  requireAuth,
   [
     body("name").trim().notEmpty().withMessage("Please give Business Name"),
     body("description")
@@ -186,11 +196,20 @@ router.put(
     //@ts-ignore
     product.images = delImgs;
     await product.save();
+    new PostUpdatedPublisher(natsClient.client).publish({
+      //@ts-ignore
+      id: post.id, //@ts-ignore
+      name: post.name, //@ts-ignore
+      author: post.author, //@ts-ignore
+      version: post.version, //@ts-ignore
+      description: post.description,
+    });
     res.send(product);
   })
 );
 router.delete(
   "/delete/:id",
+  requireAuth,
   catchAsync(async (req, res) => {
     const pr = await Product.findById(req.params.id);
     if (!pr) throw new NotFoundError("Product Not Found");

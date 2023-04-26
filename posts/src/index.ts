@@ -3,6 +3,7 @@ import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-
 dotenv.config();
 import { app } from "./app";
 import natsClient from "./natsClinet";
+import { ReviewCreatedListener } from "./listeners/reviewCreatedListener";
 
 const start = async () => {
   mongoose.set("strictQuery", false);
@@ -14,6 +15,15 @@ const start = async () => {
 
   try {
     await natsClient.connect("manzil", "clientID", "http://nats-srv:4222");
+
+    natsClient.client.on("close", () => {
+      console.log("NATS connection closed!");
+      process.exit();
+    });
+    process.on("SIGINT", () => natsClient.client.close());
+    process.on("SIGTERM", () => natsClient.client.close());
+    new ReviewCreatedListener(natsClient.client).listen();
+
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDb");
     app.listen(3000, () => {
