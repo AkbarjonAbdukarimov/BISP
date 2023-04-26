@@ -1,40 +1,24 @@
-import {
-  Listener,
-  NotFoundError,
-  ReviewCreatedEvent,
-  Subject,
-} from "@akbar0102/common";
+import { Listener, PostCreatedEvent, Subject } from "@akbar0102/common";
 import { Message } from "node-nats-streaming";
 import { queueGroupName } from "./queGroup";
-import Post from "../models/Review";
-import { PostUpdatedPublisher } from "../publisher/postUpdated";
+import Post from "../models/Post";
 
-export class ReviewCreatedListener extends Listener<ReviewCreatedEvent> {
-  subject: Subject.ReviewCreated = Subject.ReviewCreated;
+export class PostCreatedListener extends Listener<PostCreatedEvent> {
+  subject: Subject.PostCreated = Subject.PostCreated;
   queueGroupName = queueGroupName;
 
-  async onMessage(data: ReviewCreatedEvent["data"], msg: Message) {
-    const post = await Post.findById(data.postId);
+  async onMessage(data: PostCreatedEvent["data"], msg: Message) {
+    const { id, name, author, version } = data;
 
-    if (!post) {
-      throw new NotFoundError("Post not found");
-    }
-
-    post.reviews.push({ reviewId: data.id, rating: data.reating });
+    const post = Post.build({
+      id,
+      name,
+      //@ts-ignore
+      author,
+      version,
+    });
     await post.save();
 
-    await new PostUpdatedPublisher(this.client).publish({
-      id: post.id,
-      version: post.version,
-      //@ts-ignore
-      name: post.name,
-      //@ts-ignore
-      description: post.description,
-      //@ts-ignore
-      author: post.author,
-    });
-
-    // ack the message
     msg.ack();
   }
 }

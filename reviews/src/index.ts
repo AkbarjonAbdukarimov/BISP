@@ -3,7 +3,7 @@ import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-
 dotenv.config();
 import { app } from "./app";
 import natsClient from "./natsClinet";
-import { ReviewCreatedListener } from "./listeners/reviewCreatedListener";
+import { PostCreatedListener } from "./listeners/postCreatedListener";
 
 const start = async () => {
   mongoose.set("strictQuery", false);
@@ -22,7 +22,8 @@ const start = async () => {
     });
     process.on("SIGINT", () => natsClient.client.close());
     process.on("SIGTERM", () => natsClient.client.close());
-    new ReviewCreatedListener(natsClient.client).listen();
+
+    new PostCreatedListener(natsClient.client).listen();
 
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDb");
