@@ -1,4 +1,4 @@
-enum Subject {
+export enum Subject {
   PostCreated = "post:created",
   PostUpdated = "post:updated",
   PostDeleted = "post:deleted",
@@ -7,5 +7,3 @@ enum Subject {
   ReviewUpdated = "review:updated",
   ReviewDeleted = "review:deleted",
 }
-
-export default Subject;

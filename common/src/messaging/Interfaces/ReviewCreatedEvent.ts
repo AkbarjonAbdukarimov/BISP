@@ -1,4 +1,4 @@
-import Subject from "../subjects/Subjects";
+import { Subject } from "../subjects/Subjects";
 
 export interface ReviewCreatedEvent {
   subject: Subject.ReviewCreated;
@@ -8,6 +8,6 @@ export interface ReviewCreatedEvent {
     reating: Number;
     review: String;
     author: String;
-    _v: Number;
+    version: Number;
   };
 }

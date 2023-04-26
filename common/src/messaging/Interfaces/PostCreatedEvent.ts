@@ -1,4 +1,4 @@
-import Subject from "../subjects/Subjects";
+import { Subject } from "../subjects/Subjects";
 
 export interface PostCreatedEvent {
   subject: Subject.PostCreated;
@@ -6,6 +6,6 @@ export interface PostCreatedEvent {
     id: String;
     name: String;
     author: String;
-    _v: Number;
+    version: Number;
   };
 }

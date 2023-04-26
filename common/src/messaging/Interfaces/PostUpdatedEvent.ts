@@ -1,4 +1,4 @@
-import Subject from "../subjects/Subjects";
+import { Subject } from "../subjects/Subjects";
 
 export interface PostUpdatedEvent {
   subject: Subject.PostUpdated;
