@@ -3,7 +3,7 @@ import mongoose, { mongo } from "mongoose";
 interface PostAttrs {
   name: String;
   description: String;
-  author: mongoose.Schema.Types.ObjectId;
+  author: String;
   images: Array<{ name: string; fileId: string }> | null;
   services: Array<String>;
   categories: Array<String>;
@@ -12,7 +12,7 @@ interface PostAttrs {
 interface PostDoc extends mongoose.Document {
   name: String;
   description: String;
-  author: mongoose.Schema.Types.ObjectId;
+  author: String;
   images: Array<{ name: string; fileId: string }>;
   services: Array<String>;
   categories: Array<String>;
@@ -32,7 +32,7 @@ const PostSchema = new mongoose.Schema(
     description: String,
     images: { type: [] },
     services: { type: [], required: true },
-    author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    author: String,
     categories: [{ type: String }],
     reviews: [],
   },

@@ -85,8 +85,6 @@ router.post(
     if (files.length > 5) {
       throw new BadRequestError("Can't upload more than 5 files");
     }
-    //@ts-ignore
-    const imgs: number = -1;
 
     //@ts-ignore
     for (let i = 0; i < files.length; i++) {
@@ -114,9 +112,9 @@ router.post(
       images: uploadedFiles,
       services: services,
       //@ts-ignore
-      //author: req.currentUser.id
-      author: new mongoose.Types.ObjectId(),
+      author: req.currentUser.id,
       categories: categories,
+      reviews: [],
     });
     await product.save();
     new PostCreatedPublisher(natsClient.client).publish({
