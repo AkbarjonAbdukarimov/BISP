@@ -25,6 +25,7 @@
     "jest": "^29.3.1",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.8.4",
+    "node-nats-streaming": "^0.3.2",
     "nodemon": "^2.0.22",
     "ts-node-dev": "^2.0.0"
   }

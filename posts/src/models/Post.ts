@@ -7,6 +7,7 @@ interface PostAttrs {
   images: Array<{ name: string; fileId: string }> | null;
   services: Array<String>;
   categories: Array<String>;
+  reviews: Array<{ reviewId: String; rating: Number }>;
 }
 interface PostDoc extends mongoose.Document {
   name: String;
@@ -15,6 +16,8 @@ interface PostDoc extends mongoose.Document {
   images: Array<{ name: string; fileId: string }>;
   services: Array<String>;
   categories: Array<String>;
+  version: number;
+  reviews: Array<{ reviewId: String; rating: Number }>;
 }
 interface PostModel extends mongoose.Model<PostDoc> {
   build(post: PostAttrs): PostDoc;
@@ -31,6 +34,7 @@ const PostSchema = new mongoose.Schema(
     services: { type: [], required: true },
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     categories: [{ type: String }],
+    reviews: [],
   },
   {
     toJSON: {
