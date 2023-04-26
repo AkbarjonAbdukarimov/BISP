@@ -14,7 +14,7 @@ const start = async () => {
   }
 
   try {
-    await natsClient.connect("manzil", "posgSrvId", "http://nats-srv:4222");
+    await natsClient.connect("manzil", "reviewSrvId", "http://nats-srv:4222");
 
     natsClient.client.on("close", () => {
       console.log("NATS connection closed!");

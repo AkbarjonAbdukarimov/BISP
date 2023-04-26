@@ -6,7 +6,7 @@ import {
 } from "@akbar0102/common";
 import { Message } from "node-nats-streaming";
 import { queueGroupName } from "./queGroup";
-import Post from "../models/Post";
+import Post from "../models/Review";
 import { PostUpdatedPublisher } from "../publisher/postUpdated";
 
 export class ReviewCreatedListener extends Listener<ReviewCreatedEvent> {

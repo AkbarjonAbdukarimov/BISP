@@ -5,7 +5,7 @@ import {
   NotFoundError,
 } from "@akbar0102/common";
 import express, { json } from "express";
-import { ProductsRoute } from "./routes/PostRoutes";
+import { ProductsRoute } from "./routes/ReviewRoutes";
 import jwt from "jsonwebtoken";
 import cookieSession from "cookie-session";
 const app = express();

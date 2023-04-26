@@ -1,1 +1,1 @@
-export const queueGroupName = "post-service";
+export const queueGroupName = "reveiw-service";

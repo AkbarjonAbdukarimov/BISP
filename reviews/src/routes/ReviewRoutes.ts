@@ -9,7 +9,7 @@ import { Router } from "express";
 
 import multer, { MulterError } from "multer";
 import { deletefiles, uploadFile } from "../utils/cloud";
-import Product from "../models/Post";
+import Product from "../models/Review";
 import { body } from "express-validator";
 import mongoose from "mongoose";
 
