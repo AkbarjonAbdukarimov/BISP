@@ -4,17 +4,17 @@ interface PostAttrs {
   name: String;
   description: String;
   author: mongoose.Schema.Types.ObjectId;
-  images: Array<String> | null;
+  images: Array<{ name: string; fileId: string }> | null;
   services: Array<String>;
-  categories: Array<mongoose.Schema.Types.ObjectId>;
+  categories: Array<String>;
 }
 interface PostDoc extends mongoose.Document {
   name: String;
   description: String;
   author: mongoose.Schema.Types.ObjectId;
-  images: Array<String>;
+  images: Array<{ name: string; fileId: string }>;
   services: Array<String>;
-  categories: Array<mongoose.Schema.Types.ObjectId>;
+  categories: Array<String>;
 }
 interface PostModel extends mongoose.Model<PostDoc> {
   build(post: PostAttrs): PostDoc;
@@ -30,7 +30,7 @@ const PostSchema = new mongoose.Schema(
     images: { type: [] },
     services: { type: [], required: true },
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    categories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
+    categories: [{ type: String }],
   },
   {
     toJSON: {

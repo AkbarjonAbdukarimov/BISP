@@ -5,6 +5,7 @@ import { app } from "./app";
 import natsClient from "./natsClinet";
 
 const start = async () => {
+  mongoose.set("strictQuery", false);
   console.log("Starting up........");
 
   if (!process.env.MONGO_URI) {

@@ -7,13 +7,51 @@ import {
 import { Router } from "express";
 
 import multer, { MulterError } from "multer";
-import { deleteFiles, uploadFile } from "../utils/cloud";
+import { deletefiles, uploadFile } from "../utils/cloud";
 import Product from "../models/Post";
 import { body } from "express-validator";
+import mongoose from "mongoose";
 
-const upload = multer();
+import ImageKit from "imagekit";
+import { Multer } from "multer";
+
+const imagekit = new ImageKit({
+  //@ts-ignore
+  urlEndpoint: process.env.IMAGE_KIT_URL,
+  //@ts-ignore
+  publicKey: process.env.IMAGE_KIT_PUBLIC_KEY,
+  //@ts-ignore
+  privateKey: process.env.IMAGE_KIT_PRIVATE_KEY,
+});
+
+const upload = multer({ storage: multer.memoryStorage() });
 const router = Router();
 
+router.get(
+  "/",
+  catchAsync(async (req, res) => {
+    const { name, categories, id } = req.query;
+
+    let query = {};
+    if (name) {
+      //@ts-ignore
+      query = { ...query, name: { $regex: new RegExp(name, "i") } };
+    }
+    if (id) {
+      //@ts-ignore
+      query = { _id: id };
+    }
+    //@ts-ignore
+    if (categories && categories.length > 0) {
+      query = { ...query, categories: { $in: categories } };
+    }
+    const products = await Product.find(query);
+    // if (products.length === 0) {
+    //   throw new NotFoundError(`Product${id ? "" : "s"} Not Found`);
+    // }
+    res.send(products);
+  })
+);
 router.post(
   "/create",
   //  requireAuth,
@@ -34,7 +72,7 @@ router.post(
 
   catchAsync(async (req, res, next) => {
     const { body, files } = req;
-    let uploadedFiles: String[] = [];
+    let uploadedFiles: { name: string; fileId: string }[] = [];
     if (!files || files.length === 0) {
       throw new BadRequestError("Please upload Images");
     }
@@ -43,13 +81,27 @@ router.post(
       throw new BadRequestError("Can't upload more than 5 files");
     }
     //@ts-ignore
-    const imgs: number = files.length - 1;
-    for (let i = 0; i <= imgs; i++) {
+    const imgs: number = -1;
+
+    //@ts-ignore
+    for (let i = 0; i < files.length; i++) {
       //@ts-ignore
-      const file = await uploadFile(files[i]);
-      //@ts-ignore
-      uploadedFiles.push(file.id);
+      const file = files[i];
+      const res = await imagekit.upload({
+        file: file.buffer.toString("base64"), //required
+        fileName: file.originalname, //required
+        useUniqueFileName: true,
+        extensions: [
+          {
+            name: "google-auto-tagging",
+            maxTags: 5,
+            minConfidence: 95,
+          },
+        ],
+      });
+      uploadedFiles.push({ name: res.name, fileId: res.fileId });
     }
+
     const { name, description, services, categories } = body;
     const product = Product.build({
       name: name,
@@ -57,40 +109,15 @@ router.post(
       images: uploadedFiles,
       services: services,
       //@ts-ignore
-      author: req.currentUser.id,
+      //author: req.currentUser.id
+      author: new mongoose.Types.ObjectId(),
       categories: categories,
     });
     await product.save();
-    res.status(201).send({
-      product,
-    });
+    res.status(201).send(product);
   })
 );
-router.get(
-  "/",
-  catchAsync(async (req, res) => {
-    const { name, categories, id } = req.query;
 
-    let query = {};
-    if (name) {
-      //@ts-ignore
-      query = { ...query, name: { $regex: new RegExp(name, "i") } };
-    }
-    if (id) {
-      //@ts-ignore
-      query = { _id: id };
-    }
-    //@ts-ignore
-    if (categories && categories.length > 0) {
-      query = { ...query, categories: { $in: categories } };
-    }
-    const products = await Product.find(query);
-    if (products.length === 0) {
-      throw new NotFoundError(`Product${id ? "" : "s"} Not Found`);
-    }
-    res.send(products);
-  })
-);
 router.put(
   "/update/:id",
   [
@@ -109,24 +136,26 @@ router.put(
   upload.array("images"),
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const { name, description, services, categories, deletedImages } = body;
+    const { name, description, services, categories, deletedImages } = req.body;
     const { files } = req;
 
     const product = await Product.findById(id);
     if (!product) {
       throw new NotFoundError("Product Not Found");
     }
-    let delImgs: String[] = [...product.images];
+    let delImgs: { name: string; fileId: string }[] = [...product.images];
 
     //@ts-ignore
 
     deletedImages.forEach((element) => {
-      delImgs = delImgs.filter((j) => j !== element);
+      imagekit.deleteFile(element.fileId).then((response) => {
+        console.log(response);
+      });
     });
 
     //@ts-ignore
     deletedImages.forEach(async (i) => {
-      await deleteFiles(i);
+      await deletefiles(i);
     });
     if (deletedImages && deletedImages.length > 0) {
       if (deletedImages.length === product.images.length) {
@@ -163,11 +192,20 @@ router.put(
 router.delete(
   "/delete/:id",
   catchAsync(async (req, res) => {
+    const pr = await Product.findById(req.params.id);
+    if (!pr) throw new NotFoundError("Product Not Found");
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);
 
-    if (!deletedProduct) throw new NotFoundError("Product Not Found");
-    deletedProduct.images.forEach(async (i) => {
-      await deleteFiles(i);
+    //@ts-ignore
+    pr.images.forEach(async (i) => {
+      imagekit
+        .deleteFile(i.fileId)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     });
     res.send(deletedProduct);
   })
