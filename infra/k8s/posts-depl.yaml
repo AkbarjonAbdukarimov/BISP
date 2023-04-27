@@ -17,7 +17,7 @@ spec:
           image: akbar010202/posts
           env:
             - name: MONGO_URI
-              value: "mongodb://posts-mongo-srv:27017/posts"
+              value: "mongodb://mongo-srv:27017/posts"
             - name: JWT_KEY
               value: "JWT_Secret"
           resources:

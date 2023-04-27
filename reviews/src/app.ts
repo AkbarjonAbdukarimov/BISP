@@ -27,6 +27,7 @@ app.all("*", (req, res) => {
   console.log("not found");
   throw new NotFoundError();
 });
+//@ts-ignore
 app.use((err, req, res, next) => {
   console.log(err);
   if (err instanceof CustomError) {

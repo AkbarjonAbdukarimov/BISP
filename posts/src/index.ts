@@ -4,7 +4,7 @@ dotenv.config();
 import { app } from "./app";
 import natsClient from "./natsClinet";
 import { ReviewCreatedListener } from "./listeners/reviewCreatedListener";
-
+const port = 9000;
 const start = async () => {
   mongoose.set("strictQuery", false);
   console.log("Starting up........");
@@ -14,20 +14,20 @@ const start = async () => {
   }
 
   try {
-    await natsClient.connect("manzil", "posgSrvId", "http://nats-srv:4222");
+    // await natsClient.connect("manzil", "posgSrvId", "http://nats-srv:4222");
 
-    natsClient.client.on("close", () => {
-      console.log("NATS connection closed!");
-      process.exit();
-    });
-    process.on("SIGINT", () => natsClient.client.close());
-    process.on("SIGTERM", () => natsClient.client.close());
-    new ReviewCreatedListener(natsClient.client).listen();
+    // natsClient.client.on("close", () => {
+    //   console.log("NATS connection closed!");
+    //   process.exit();
+    // });
+    // process.on("SIGINT", () => natsClient.client.close());
+    // process.on("SIGTERM", () => natsClient.client.close());
+    // new ReviewCreatedListener(natsClient.client).listen();
 
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDb");
-    app.listen(3000, () => {
-      console.log("Listening on  3000");
+    app.listen(port, () => {
+      console.log("Listening on " + port);
     });
   } catch (err) {
     //@ts-ignore

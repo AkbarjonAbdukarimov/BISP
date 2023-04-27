@@ -17,7 +17,7 @@ spec:
           image: akbar010202/review
           env:
             - name: MONGO_URI
-              value: "mongodb://review-mongo-srv:27017/review"
+              value: "mongodb://mongo-srv:27017/review"
             - name: JWT_KEY
               value: "JWT_Secret"
           resources:
