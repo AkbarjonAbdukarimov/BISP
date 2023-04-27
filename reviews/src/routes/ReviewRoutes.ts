@@ -13,55 +13,6 @@ import { ReviewCreatedPublisher } from "../publisher/reviewCreated";
 import natsClient from "../natsClinet";
 
 const router = Router();
-
-router.get(
-  "/post/:postId",
-  catchAsync(async (req, res) => {
-    const reviews = Review.find({ postId: req.params.postId });
-    res.send(reviews);
-  })
-);
-router.post(
-  "/post/:postId/create",
-  currentUser,
-  requireAuth,
-  [
-    body("comment")
-      .trim()
-      .notEmpty()
-      .withMessage("Please provide valid feedback"),
-
-    body("rating")
-      .notEmpty()
-      .isNumeric()
-      .withMessage("Please Provide Rating in range from 0 to 5"),
-  ],
-
-  catchAsync(async (req, res) => {
-    const { postId } = req.params;
-    const post = Post.findById(postId);
-    const { rating, comment } = req.body;
-    if (!post) throw new NotFoundError("Post Not Found");
-    const review = Review.build({
-      rating,
-      comment,
-      //@ts-ignore
-      author: req.currentUser?.id,
-      postId,
-    });
-    await review.save();
-    //@ts-ignore
-    new ReviewCreatedPublisher(natsClient.client).publish({
-      id: review.id,
-      postId,
-      review: review.comment,
-      author: review.author,
-      version: review.version,
-    });
-    res.send(review);
-  })
-);
-
 router.put(
   "/update/:id",
   currentUser,
@@ -88,7 +39,7 @@ router.put(
       });
 
     const { rating, comment } = req.body;
-    review.set({ rating, comment });
+    review.set({ rating, comment, date: new Date() });
     await review.save();
     // review updated publisher
     res.send(review);
@@ -107,6 +58,55 @@ router.delete(
       });
     const delRev = await Review.findByIdAndDelete(req.params.id);
     res.send(delRev);
+  })
+);
+router.post(
+  "/post/:postId/create",
+  currentUser,
+  requireAuth,
+  [
+    body("comment")
+      .trim()
+      .notEmpty()
+      .withMessage("Please provide valid feedback"),
+
+    body("rating")
+      .notEmpty()
+      .isNumeric()
+      .withMessage("Please Provide Rating in range from 0 to 5"),
+  ],
+  catchAsync(async (req, res) => {
+    const { postId } = req.params;
+    const post = await Post.findOne({ postId: postId });
+    console.log("post is", post);
+    if (!post) throw new NotFoundError("Post Not Found");
+    const { rating, comment } = req.body;
+    const review = Review.build({
+      rating,
+      comment,
+      //@ts-ignore
+      author: req.currentUser?.id,
+      postId,
+      date: new Date(),
+    });
+    await review.save();
+    //@ts-ignore
+    new ReviewCreatedPublisher(natsClient.client).publish({
+      id: review.id,
+      postId,
+      review: review.comment,
+      reating: review.rating,
+      author: review.author,
+      version: review.version,
+    });
+    res.send(review);
+  })
+);
+router.get(
+  "/post/:postId",
+  catchAsync(async (req, res) => {
+    const reviews = await Review.find({ postId: req.params.postId });
+    res.send(reviews);
   })
 );
 

@@ -6,6 +6,7 @@ interface ReviewAttrs {
   author: String;
   date: Date;
   postId: String;
+  version: number;
 }
 interface ReviewDoc extends mongoose.Document {
   rating: Number;
@@ -23,9 +24,9 @@ const ReviewSchema = new mongoose.Schema(
   {
     rating: { type: Number, min: 0, max: 5, required: true },
     comment: { type: String, required: true },
-    author: { type: mongoose.Types.ObjectId, required: true },
+    author: { type: String, required: true },
     date: { type: Date, default: Date.now },
-    postId: { type: mongoose.Types.ObjectId, required: true },
+    postId: { type: String, required: true },
   },
   {
     toJSON: {
@@ -38,11 +39,7 @@ const ReviewSchema = new mongoose.Schema(
 );
 
 ReviewSchema.statics.build = (attrs: ReviewAttrs) => new Review(attrs);
-ReviewSchema.pre("save", function preSave(next) {
-  //@ts-ignore
-  this.date(Date.now());
-  next();
-});
+
 const Review = mongoose.model<ReviewDoc, ReviewModel>("Review", ReviewSchema);
 
 export default Review;

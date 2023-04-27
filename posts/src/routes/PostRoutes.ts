@@ -17,6 +17,7 @@ import ImageKit from "imagekit";
 import { PostCreatedPublisher } from "../publisher/postCreated";
 import natsClient from "../natsClinet";
 import { PostUpdatedPublisher } from "../publisher/postUpdated";
+import { PostDeletedPublisher } from "../publisher/postDeleted";
 
 const imagekit = new ImageKit({
   //@ts-ignore
@@ -239,6 +240,12 @@ router.delete(
         .catch((error) => {
           console.log(error);
         });
+    });
+    //@ts-ignore
+    new PostDeletedPublisher(natsClient.client).publish({
+      //@ts-ignore
+      id: pr!.id, //@ts-ignore
+      author: pr?.author,
     });
     res.send(deletedProduct);
   })

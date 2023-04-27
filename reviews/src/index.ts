@@ -5,6 +5,7 @@ import { app } from "./app";
 import natsClient from "./natsClinet";
 import { PostCreatedListener } from "./listeners/postCreatedListener";
 import { PostUpdatedListener } from "./listeners/postUpdatedListener";
+import { PostDeletedListener } from "./listeners/postDeletedListener";
 
 const start = async () => {
   mongoose.set("strictQuery", false);
@@ -26,6 +27,7 @@ const start = async () => {
 
     new PostCreatedListener(natsClient.client).listen();
     new PostUpdatedListener(natsClient.client).listen();
+    new PostDeletedListener(natsClient.client).listen();
 
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDb");
@@ -35,7 +37,7 @@ const start = async () => {
   } catch (err) {
     //@ts-ignore
     console.error(err.message, err);
-    console.log("---------------------------------------");
+    console.log("-------------------------------------");
   }
 };
 

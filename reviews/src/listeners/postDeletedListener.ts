@@ -1,31 +1,27 @@
 import {
   Listener,
   NotFoundError,
-  PostCreatedEvent,
-  PostUpdatedEvent,
+  PostDeletedEvent,
   Subject,
 } from "@akbar0102/common";
 import { Message } from "node-nats-streaming";
 import { queueGroupName } from "./queGroup";
 import Post from "../models/Post";
+import Review from "../models/Review";
 
-export class PostUpdatedListener extends Listener<PostUpdatedEvent> {
-  subject: Subject.PostUpdated = Subject.PostUpdated;
+export class PostDeletedListener extends Listener<PostDeletedEvent> {
+  subject: Subject.PostDeleted = Subject.PostDeleted;
   queueGroupName = queueGroupName;
 
-  async onMessage(data: PostUpdatedEvent["data"], msg: Message) {
-    const { id, name, author, version } = data;
+  async onMessage(data: PostDeletedEvent["data"], msg: Message) {
+    const { id, author } = data;
     //@ts-ignore
     const post = await Post.findByEvent({ id, version });
     if (!post) {
       throw new NotFoundError();
     }
-    post.set({
-      name,
-      author,
-    });
-    await post.save();
-
+    await Post.deleteOne({ postId: id });
+    await Review.deleteMany({ postId: id });
     msg.ack();
   }
 }

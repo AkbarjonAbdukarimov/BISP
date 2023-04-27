@@ -1,18 +1,20 @@
 import mongoose from "mongoose";
 import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 interface PostAttrs {
+  id: string;
   name: String;
   description: String;
-  author: mongoose.Schema.Types.ObjectId;
+  author: String;
   images: Array<{ name: string; fileId: string }> | null;
   services: Array<String>;
   categories: Array<String>;
   reviews: Array<String>;
 }
 interface PostDoc extends mongoose.Document {
+  id: string;
   name: String;
   description: String;
-  author: mongoose.Schema.Types.ObjectId;
+  author: String;
   images: Array<{ name: string; fileId: string }>;
   services: Array<String>;
   categories: Array<String>;
@@ -25,6 +27,7 @@ interface PostModel extends mongoose.Model<PostDoc> {
 
 const PostSchema = new mongoose.Schema(
   {
+    postId: String,
     name: {
       type: String,
       required: true,
@@ -32,7 +35,7 @@ const PostSchema = new mongoose.Schema(
     description: String,
     images: { type: [] },
     services: { type: [] },
-    author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    author: { type: String },
     categories: [{ type: String }],
     reviews: [{ type: mongoose.Types.ObjectId, ref: "Review" }],
   },
@@ -47,11 +50,20 @@ const PostSchema = new mongoose.Schema(
 );
 PostSchema.statics.findByEvent = (event: { id: string; version: number }) => {
   return Post.findOne({
-    _id: event.id,
-    version: event.version - 1,
+    postId: event.id,
   });
 };
-PostSchema.statics.build = (attrs: PostAttrs) => new Post(attrs);
+PostSchema.statics.build = (attrs: PostAttrs) =>
+  new Post({
+    postId: attrs.id,
+    name: attrs.name,
+    description: attrs.description,
+    images: attrs.images,
+    services: attrs.services,
+    author: attrs.author,
+    categories: attrs.categories,
+    reviews: attrs.reviews,
+  });
 
 const Post = mongoose.model<PostDoc, PostModel>("Post", PostSchema);
 

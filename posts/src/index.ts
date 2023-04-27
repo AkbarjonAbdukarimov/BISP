@@ -32,7 +32,7 @@ const start = async () => {
   } catch (err) {
     //@ts-ignore
     console.error(err.message, err);
-    console.log("---------------------------------------");
+    console.log("-------------------------------------");
   }
 };
 

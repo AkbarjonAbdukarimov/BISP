@@ -11,6 +11,7 @@ export class PostCreatedListener extends Listener<PostCreatedEvent> {
     const { id, name, author, version } = data;
 
     const post = Post.build({
+      //@ts-ignore
       id,
       name,
       //@ts-ignore
@@ -18,6 +19,8 @@ export class PostCreatedListener extends Listener<PostCreatedEvent> {
       version,
     });
     await post.save();
+    let posts = await Post.find();
+    console.log(posts);
 
     msg.ack();
   }
