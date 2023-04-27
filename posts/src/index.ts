@@ -4,7 +4,7 @@ dotenv.config();
 import { app } from "./app";
 import natsClient from "./natsClinet";
 import { ReviewCreatedListener } from "./listeners/reviewCreatedListener";
-const port = 9000;
+const port = 3000;
 const start = async () => {
   mongoose.set("strictQuery", false);
   console.log("Starting up........");
