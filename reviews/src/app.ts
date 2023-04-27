@@ -8,6 +8,7 @@ import express, { json } from "express";
 import { ReviewRoutes } from "./routes/ReviewRoutes";
 import jwt from "jsonwebtoken";
 import cookieSession from "cookie-session";
+import cors from "cors";
 const app = express();
 
 app.use(
@@ -18,6 +19,7 @@ app.use(
     maxAge: 12 * 60 * 60 * 1000,
   })
 );
+app.use(cors({ origin: true, credentials: true }));
 app.use(json());
 app.set("trust proxy", true);
 app.use(currentUser);
