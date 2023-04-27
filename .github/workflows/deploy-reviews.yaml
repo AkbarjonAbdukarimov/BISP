@@ -1,25 +1,25 @@
-name: deploy-auth
+name: deploy-reviews
 
 on:
   push:
     branches:
       - master
     paths:
-      - "auth/**"
+      - "reviews/**"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cd auth && docker build -t akbar010202/auth .
+      - run: cd reviews && docker build -t akbar010202/reviews .
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker push akbar010202/auth
+      - run: docker push akbar010202/reviews
       - uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       - run: doctl kubernetes cluster kubeconfig save manzil-project
-      - run: kubectl rollout restart deployment auth-depl
+      - run: kubectl rollout restart deployment reviews-depl
