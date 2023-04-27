@@ -7,7 +7,7 @@ import { ReviewCreatedListener } from "./listeners/reviewCreatedListener";
 const port = 3000;
 const start = async () => {
   mongoose.set("strictQuery", false);
-  console.log("Starting up..............");
+  console.log("Starting up............");
 
   if (!process.env.MONGO_URI) {
     throw new Error("MONGO_URI must be defined");
