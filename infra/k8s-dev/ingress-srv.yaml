@@ -32,10 +32,10 @@ spec:
                 name: review-srv
                 port:
                   number: 3000
-          - pathType: Prefix
-            path: /?(.*)
-            backend:
-              service:
-                name: client-srv
-                port:
-                  number: 3000
+          # - pathType: Prefix
+          #   path: /?(.*)
+          #   backend:
+          #     service:
+          #       name: client-srv
+          #       port:
+          #         number: 3000
