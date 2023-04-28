@@ -16,7 +16,7 @@ jobs:
       - run: echo ${{ secrets.DOCKER_PASSWORD }} |docker login -u $DOCKER_USERNAME --password-stdin
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      - run: docker push akbar010202/reviews
+      - run: docker push akbar010202/review
       - uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
