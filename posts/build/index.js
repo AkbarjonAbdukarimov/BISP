@@ -44,7 +44,7 @@ const reviewCreatedListener_1 = require("./listeners/reviewCreatedListener");
 const port = 3000;
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     mongoose_1.default.set("strictQuery", false);
-    console.log("Starting up............");
+    console.log("Starting up...");
     if (!process.env.MONGO_URI) {
         throw new Error("MONGO_URI must be defined");
     }

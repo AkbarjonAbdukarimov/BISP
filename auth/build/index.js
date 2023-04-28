@@ -40,7 +40,7 @@ const dotenv = __importStar(require("dotenv")); // see https://github.com/motdot
 dotenv.config();
 const app_1 = require("./app");
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Starting up..........");
+    console.log("Starting up...");
     mongoose_1.default.set("strictQuery", false);
     if (!process.env.JWT_KEY) {
         throw new Error("JWT_KEY must be defined");
