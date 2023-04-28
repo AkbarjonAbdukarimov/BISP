@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "buildDev": "tsc && nodemon build/index.js",
-    "start": "concurrently  \"tsc -w\" \"nodemon build/index.js\""
+    "start": "nodemon build/index.js"
   },
   "keywords": [],
   "author": "",
