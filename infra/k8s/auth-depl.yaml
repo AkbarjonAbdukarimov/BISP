@@ -20,13 +20,13 @@ spec:
               value: "mongodb://mongo-srv:27017/auth"
             - name: JWT_KEY
               value: "JWT_Secret"
-          resources:
-            limits:
-              memory: 512Mi
-              cpu: "1"
-            requests:
-              memory: 256Mi
-              cpu: "0.2"
+          # resources:
+          #   limits:
+          #     memory: 512Mi
+          #     cpu: "1"
+          #   requests:
+          #     memory: 256Mi
+          #     cpu: "0.2"
 ---
 apiVersion: v1
 kind: Service
