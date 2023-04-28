@@ -13,7 +13,7 @@ app.use(
     // secure: process.env.NODE_ENV !== 'test',
     secure: false,
     maxAge: 12 * 60 * 60 * 1000,
-    sameSite: "none",
+    sameSite: "lax",
   })
 );
 app.use(cors({ origin: true, credentials: true }));
