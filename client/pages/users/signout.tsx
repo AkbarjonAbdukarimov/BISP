@@ -27,7 +27,7 @@ SignOut.getInitialProps = async (context, client, currentUser) => {
     }
     try {
 
-        const responce = axios.post(`${client}/api/users/signout`, {}, { withCredentials: true, headers })
+        const responce = await client.post(`/api/users/signout`)
         console.log(responce)
         if (responce) {
             if (res) {
