@@ -17,9 +17,7 @@ app.set("trust proxy", true);
 app.use((0, cookie_session_1.default)({
     signed: false,
     // secure: process.env.NODE_ENV !== 'test',
-    secure: false,
     maxAge: 12 * 60 * 60 * 1000,
-    sameSite: "lax",
 }));
 app.use((0, cors_1.default)({ origin: true, credentials: true }));
 app.use(common_1.currentUser);

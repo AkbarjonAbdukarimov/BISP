@@ -11,9 +11,8 @@ app.use(
   cookieSession({
     signed: false,
     // secure: process.env.NODE_ENV !== 'test',
-    secure: false,
+
     maxAge: 12 * 60 * 60 * 1000,
-    sameSite: "lax",
   })
 );
 app.use(cors({ origin: true, credentials: true }));
